@@ -6,14 +6,14 @@ This chat application will be a discord like app
 - Users should be able to create accounts
 - Users should be able to join chats
 - Users should be able to send messages
-
+- Users should be able to read messages
 ## Non-functional Requirements
 
 - High availabilty
 - Reliabilty
 - Messages should be in order
 - Low latency (fast writes and reads)
-- scaleability (stores a lot of messages)
+- scaleability (stores a lot of messages, and handles big volume of sent messages)
 
 ## Core entities
 
@@ -78,3 +78,14 @@ OUTPUT:
 
 
 ## High level desing
+
+-
+
+
+<img src="chat_app.drawio.png">
+
+## Deep dives
+
+- We will split the main functionnalities on servers,each functionnality has it own servers in order to scale services when needed and increase availabilty.An api gateway will sit in front of this servers to route requests
+- The chat applications is a heavy read application but with a significant amount of writes, so we need a high read throughput and high writes throuput thats why a leaderless replication database is more appropriate in this situation
+- Message distribution:We will use consistent hashing for storing a chat messages.Every chat will have a unique id,messages of that chat will have a generated id from the chat id and every id will have a privatie partition reserved for him.  we have potentiel problemes in creating a hot spots for very active servers.While 90% of discord servers have less than 15 members we can handle this probleme.
