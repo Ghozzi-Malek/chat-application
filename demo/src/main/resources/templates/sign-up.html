@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PulseChat | Sign Up</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" href="/css/app.css" />
+</head>
+<body class="auth-shell auth-shell-alt">
+<main class="auth-card signup-card">
+    <section class="auth-brand">
+        <div class="brand-badge brand-badge-alt">P</div>
+        <p class="eyebrow">Create your space</p>
+        <h1>Sign up for PulseChat</h1>
+        <p class="lede">Set up your profile, join rooms, and start sending messages in a clean Discord-style workspace.</p>
+    </section>
+
+    <section class="auth-panel">
+        <form class="auth-form">
+            <div class="two-col">
+                <label>
+                    First name
+                    <input type="text" placeholder="Malek" />
+                </label>
+                <label>
+                    Last name
+                    <input type="text" placeholder="Amin" />
+                </label>
+            </div>
+            <label>
+                Username
+                <input type="text" placeholder="malek_amin" />
+            </label>
+            <label>
+                Email
+                <input type="email" placeholder="you@example.com" />
+            </label>
+            <label>
+                Password
+                <input type="password" placeholder="Create a strong password" />
+            </label>
+            <button type="submit" class="primary-button">Create account</button>
+        </form>
+
+        <p class="switch-copy">Already have an account? <a th:href="@{/sign-in}" href="sign-in.html">Sign in</a></p>
+    </section>
+</main>
+</body>
+</html>

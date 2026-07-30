@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PulseChat | Chats</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" href="../static/css/app.css" />
+</head>
+<body class="app-shell">
+<header class="topbar">
+    <div>
+        <p class="eyebrow">PulseChat workspace</p>
+        <h1>Messages and chats</h1>
+    </div>
+    <div class="topbar-actions">
+        <a th:href="@{/sign-in}" href="sign-in.html">Sign out</a>
+        <a th:href="@{/sign-up}" href="sign-up.html" class="primary-link">Invite friend</a>
+    </div>
+</header>
+
+<main class="chat-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <p class="eyebrow">Chats</p>
+            <span>3 active</span>
+        </div>
+
+        <div class="chat-list">
+            <article class="chat-item" th:each="chat : ${chats}" th:classappend="${chat.active()} ? ' active' : ''">
+                <div class="chat-avatar" th:text="${chat.name().substring(0, 1)}">P</div>
+                <div class="chat-meta">
+                    <div class="chat-row">
+                        <h2 th:text="${chat.name()}">Product Team</h2>
+                        <span th:text="${chat.time()}">2m ago</span>
+                    </div>
+                    <p><strong th:text="${chat.lastSender()}">Nadia</strong>: <span th:text="${chat.lastMessage()}">Shipping the onboarding redesign today.</span></p>
+                </div>
+            </article>
+        </div>
+    </aside>
+
+    <section class="conversation">
+        <div class="conversation-header">
+            <div>
+                <p class="eyebrow">Current room</p>
+                <h2>Product Team</h2>
+            </div>
+            <button type="button" class="ghost-button">Join chat</button>
+        </div>
+
+        <div class="message-feed">
+            <article class="message" th:each="message : ${messages}" th:classappend="${message.incoming()} ? ' incoming' : ' outgoing'">
+                <div class="message-avatar" th:text="${message.sender().substring(0, 1)}">N</div>
+                <div class="message-body">
+                    <div class="message-meta">
+                        <strong th:text="${message.sender()}">Nadia</strong>
+                        <span th:text="${message.time()}">8:42 AM</span>
+                    </div>
+                    <p th:text="${message.body()}">Let’s keep the new sidebar compact on mobile.</p>
+                </div>
+            </article>
+        </div>
+
+        <form class="composer">
+            <input type="text" placeholder="Write a message..." />
+            <button type="submit" class="primary-button">Send</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>
