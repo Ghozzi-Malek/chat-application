@@ -1,4 +1,4 @@
-# THIS design contain will be abondend because it is wrong
+# THIS design is abondend because it is wrong
 # chat_application
 
 This chat application will be a discord like app
