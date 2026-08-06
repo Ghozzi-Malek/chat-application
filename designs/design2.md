@@ -20,5 +20,34 @@ In this application we will use websockets to connect users and servers and as a
 ### Commands
 
 - sendMessage
+
+{
+    "type": "sendMessage",
+    "chatId": "",
+    "message": "",
+} -> {
+    "SUCCESS" | " FAILURE",
+     "message"Id": "",
+}
+
 - receiveMessage
-- 
+
+{
+    "type": "receiveMessage",
+    "chatId": "",
+    "messageId": "",
+    "UserId": "",
+
+}
+- createChat
+
+{
+    "chatName": "",
+    "participants": [],
+} -> {
+    "chatId": "",
+}
+
+
+
+## High level design
