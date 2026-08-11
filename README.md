@@ -54,7 +54,7 @@ In this application we will use websockets to connect users and servers and as a
 
 - We will use DynamoDB for chat application because of its fast retrivals and scalability. our essential need is lots of write and lots of simple lookups with no joins or complex queries
 
-<img src="chat-app.png">
+<img src="designs/chat-app.png">
 
 
 ## Deep dives
