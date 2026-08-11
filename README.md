@@ -1,93 +1,62 @@
-# THIS design is abandoned because it is wrong
-# chat_application
+# Chat application
 
-This chat application will be a discord like app
 
-## Functional Requirements
-- Users should be able to create accounts
-- Users should be able to join chats
+
+## Functional requirements
+- Users should be able to start chats
 - Users should be able to send messages
-- Users should be able to read messages even after being offline
-## Non-functional Requirements
+- Users should be able to receive messages(whether they are online when messages are sent or offline)
 
-- High availabilty
-- Messages should be in order
-- Low latency (fast writes and reads)(500ms)
-- scaleability (stores a lot of messages, and handles big volume of sent messages)
+## Non functional requirements
+- low latency(~500ms)
+- high availabilty
+- scalining
 
-## Core entities
 
-- User
-- chat_room
-- message
+## api
 
-## Api end-points
+In this application we will use websockets to connect users and servers and as a result we wont have regular endpoints.
 
-### - get latest 100 message
-GET /chat/{id}
+### Commands
 
-Inputs:
-    chat id
-    auth token
-
-Ouput:
+- sendMessage
 
 {
-    "message1": "lorem",
-    "message1 sender": "el bo3",
-    .
-    .
-    .
-    "message100": "lorem"
-    "message100 sender": "7amouda",
+    "type": "sendMessage",
+    "chatId": "",
+    "message": "",
+} -> {
+    "SUCCESS" | " FAILURE",
+     "message"Id": "",
 }
 
-### - join chat
-POST /chat/{id}/join
+- receiveMessage
 
-Inputs:
-    chat id
-    auth token
+{
+    "type": "receiveMessage",
+    "chatId": "",
+    "messageId": "",
+    "UserId": "",
 
-OUTPUT:
-    http response
+}
+- createChat
 
-### - send message
-POST /chat/{id}
-
-Inputs:
-    chat id
-    user id
-    message body
-
-
-OUTPUT:
-    http response
-
-### - create account
-POST /sign-in
-
-OUTPUT:
-    http response
-
-### - sign up
-POST /sign-up
-
-OUTPUT:
-    http response
+{
+    "chatName": "",
+    "participants": [],
+} -> {
+    "chatId": "",
+}
 
 
-## High level desing
 
--
+## High level design
 
+- We will use DynamoDB for chat application because of its fast retrivals and scalability. our essential need is lots of write and lots of simple lookups with no joins or complex queries
 
-<img src="chat_app.drawio.png">
+<img src="chat-app.png">
+
 
 ## Deep dives
 
-- Each main functionnality will run on its own servers in order to scale services when needed and increase availabilty.An api gateway will sit in front of this servers to route requests
-- The chat applications is a heavy read application but with a significant amount of writes, so we need a high read throughput and high writes throuput thats why a leaderless replication database is more appropriate in this situation
-- Message distribution:We will use consistent hashing for storing a chat messages.Every chat will have a unique id,messages of that chat will have a generated id from the chat id and every id will have a privatie partition reserved for him.  we have potentiel problemes in creating a hot spots for very active servers.While 90% of discord servers have less than 15 members we can handle this probleme.
-- For auth service no need for the high throughput provided by leaderless replication so single leader replication or multi leader replication will be more appropriate 
-- Message should be sent continously to users,they dont have to send a request in order to get messages.That s why we need a mechanism like long polling or web sockets to get this requirement
+- Redis pub/sub is a solution for scaling our system(and espacially chat servers).When adding chat servers a routing probleme arise because users(from same chat) will be spread across multiple servers which make delevring messages harder.Redis pub/sub is a simple map between users and servers , which is way lighter than kafka who is not built for this type of missions.
