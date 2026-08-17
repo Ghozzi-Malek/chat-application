@@ -7,9 +7,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.demo.service.ChatService;
+
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequestMapping
+@RequiredArgsConstructor
 public class WebPageController {
+
+	private final ChatService chatService;
+
 
 	@GetMapping({"/", "/sign-in"})
 	public String signIn() {
@@ -22,17 +30,8 @@ public class WebPageController {
 	}
 
 	@GetMapping("/chats")
-	public String chats(Model model) {
-		model.addAttribute("chats", List.of(
-			new ChatPreview("Product Team", "Nadia", "Shipping the onboarding redesign today.", "2m ago", true),
-			new ChatPreview("General", "You", "I posted the new design mockups.", "12m ago", false),
-			new ChatPreview("Gaming Squad", "Omar", "Queue up at 9 PM.", "1h ago", false)
-		));
-		model.addAttribute("messages", List.of(
-			new ChatMessage("Nadia", "Let’s keep the new sidebar compact on mobile.", "8:42 AM", true),
-			new ChatMessage("You", "Agreed. I’ll tighten the spacing and keep the actions visible.", "8:44 AM", false),
-			new ChatMessage("Nadia", "Perfect. The app should feel fast and readable.", "8:46 AM", true)
-		));
+		public String chats(Model model) {
+		model.addAttribute( "chats",chatService.getChats());
 		return "chats";
 	}
 
