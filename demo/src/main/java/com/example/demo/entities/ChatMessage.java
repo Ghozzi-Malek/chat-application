@@ -19,7 +19,7 @@ public class ChatMessage {
     private String messagId;
     private String senderId;
     private String text;
-    private long timestamp;
+    private long timeStamp;
 
     @DynamoDbPartitionKey
     public String getChatId() {
@@ -28,7 +28,7 @@ public class ChatMessage {
 
     @DynamoDbSortKey
     public long getTimeStamp(){
-        return timestamp;
+        return timeStamp;
     }
 
     
