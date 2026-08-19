@@ -11,3 +11,5 @@ aws:
     endpoint-url: "http://localhost:8000"
     dynamodb:
         chat-table: "Chat"
+        message-table: "Message"
+        members-table: "Members"
