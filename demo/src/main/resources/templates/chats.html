@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PulseChat | Chats</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <script th:inline="javascript">
+        const chats = /*[[${chats}]]*/ [];
+    </script>
     <script th:src="@{/webjars/jquery/3.1.1-1/jquery.min.js}"></script>
     <script th:src="@{/webjars/sockjs-client/1.0.2/sockjs.min.js}"></script>
     <script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
@@ -30,14 +33,21 @@
         </div>
 
         <div class="chat-list">
-            <article class="chat-item" th:each="chat : ${chats}" th:classappend="${chat.active()} ? ' active' : ''">
-                <div class="chat-avatar" th:text="${chat.name().substring(0, 1)}">P</div>
+            
+
+            </div>
+            <article class="chat-item" 
+            th:each="chat : ${chats}" 
+            th:attr="data-chat-id=${chat.chatId}"
+            onclick="changeCurrentChatId(this.dataset.chatId)">
+            <!--data-* attribute allow us to store additional data in html element,however it can be inspected and modified -->
+                <div class="chat-avatar" th:text="${chat.getName().substring(0, 1)}">P</div>
                 <div class="chat-meta">
                     <div class="chat-row">
-                        <h2 th:text="${chat.name()}">Product Team</h2>
-                        <span th:text="${chat.time()}">2m ago</span>
+                        <h2 th:text="${chat.getName()}">Product Team</h2>
+                        
                     </div>
-                    <p><strong th:text="${chat.lastSender()}">Nadia</strong>: <span th:text="${chat.lastMessage()}">Shipping the onboarding redesign today.</span></p>
+                    <!-- <p><strong th:text="${chat.lastSender()}">Nadia</strong>: <span th:text="${chat.lastMessage()}">Shipping the onboarding redesign today.</span></p> -->
                 </div>
             </article>
         </div>

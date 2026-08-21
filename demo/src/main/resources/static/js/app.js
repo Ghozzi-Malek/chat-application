@@ -1,4 +1,5 @@
 var stompClient = null;
+let currentChatId = null;
 
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
@@ -11,6 +12,18 @@ function setConnected(connected) {
     }
     $("#greetings").html("");
 }
+
+function changeCurrentChatId(id) {
+    console.log(id)
+    currentChatId = id;
+}
+
+function getCurrentChatId() {
+    return currentChatId;
+}
+
+
+
 
 function connect() {
     var socket = new SockJS('/stomp-endpoint');
@@ -26,23 +39,23 @@ function connect() {
         });
     });
 }
-
 function disconnect() {
     if (stompClient !== null) {
         stompClient.disconnect();
     }
     setConnected(false);
     console.log("Disconnected");
-}
 
-function sendName() {
+}
+function sendMessage() {
     if (!stompClient) return;
     var text = $("#message").val();
     if (!text || text.trim() === '') return;
-    stompClient.send("/app/chat.send", {}, JSON.stringify({'text': text}));
+    stompClient.send("/app/chat.send", {}, JSON.stringify({'text': text,'chatId': getCurrentChatId()}));
     // clear input after sending
     $("#message").val('');
 }
+
 
 function showGreeting(message) {
     // append a message element into the message feed
@@ -61,5 +74,6 @@ $(function () {
     $("form").on('submit', function (e) {
         e.preventDefault();
     });
-    $( "#send" ).click(function() { sendName(); });
-});
+    console.log(chats);
+    $( "#send" ).click(function() { sendMessage(); });
+})
