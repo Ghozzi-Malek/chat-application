@@ -18,7 +18,7 @@ public class Members {
     public String userId;
 
     @DynamoDbPartitionKey
-    public String getChatId() {
+    public String getChatId() {   
         return chatId;
     }
 
