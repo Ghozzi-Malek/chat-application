@@ -1,14 +1,13 @@
 package com.example.demo.controllers;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.core.Authentication;
 
 import com.example.demo.service.ChatService;
-
+import com.example.demo.entities.Chat;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -17,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 public class WebPageController {
 
 	private final ChatService chatService;
-
 
 	@GetMapping({"/", "/sign-in"})
 	public String signIn() {
@@ -30,8 +28,12 @@ public class WebPageController {
 	}
 
 	@GetMapping("/chats")
-		public String chats(Model model) {
-		model.addAttribute( "chats",chatService.getChats());
+	public String chats(Model model, Authentication auth) {
+		var chats = chatService.getChats(auth);
+		for(int i = 0;i < chats.size();i++){
+			System.out.println(chats.get(i).getName());
+		}
+		model.addAttribute("chats", chats);
 		return "chats";
 	}
 

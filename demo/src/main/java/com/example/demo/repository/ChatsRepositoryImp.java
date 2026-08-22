@@ -3,34 +3,41 @@ package com.example.demo.repository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import com.example.demo.entities.*;
+import com.example.demo.entities.Chat;
+import com.example.demo.entities.Members;
 import lombok.RequiredArgsConstructor;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbIndex;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
-
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Expression;
+import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
 @Repository
 @RequiredArgsConstructor
 
 public class ChatsRepositoryImp {
-    
+    private final DynamoDbTable<Chat> chatTable;
+    private final DynamoDbTable<Members> membersTable;
 
-    private DynamoDbTable<Members> members;
+    public List<Chat> getChats(String userId) {
+        Expression userFilter = Expression.builder()
+                .expression("userId = :userId")
+                .putExpressionValue(":userId", software.amazon.awssdk.services.dynamodb.model.AttributeValue.builder()
+                        .s(userId)
+                        .build())
+                .build();
 
-    public List<String> getChats(String userId) {
-        DynamoDbIndex<Members> index = members.index("UserChatsIndex");
-        QueryConditional condition =
-         QueryConditional.keyEqualTo(
-            Key.builder()
-               .partitionValue(userId)
-               .build()
-        );
+        ScanEnhancedRequest request = ScanEnhancedRequest.builder()
+                .filterExpression(userFilter)
+                .build();
 
-        return index.query(condition)
+        return membersTable.scan(request)
+                .items()
                 .stream()
-                .flatMap(page -> page.items().stream())
-                .map(Members::getChatId)
+                .map(member -> chatTable.getItem(Key.builder()
+                        .partitionValue(member.getChatId())
+                        .build()))
+                .filter(chat -> chat != null)
                 .toList();
     }
+
 }
+

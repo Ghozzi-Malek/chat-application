@@ -2,14 +2,10 @@ package com.example.demo.service;
 
 import java.util.List;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.example.demo.entities.Chat;
-import com.example.demo.repository.ChatsRepository;
 import com.example.demo.repository.ChatsRepositoryImp;
-
+import org.springframework.security.core.Authentication;
 @Service
 public class ChatService {
     private final ChatsRepositoryImp chatsRepository;
@@ -18,7 +14,7 @@ public class ChatService {
         this.chatsRepository = chatsRepository;
     }
 
-    public List<String> getChats(Authentication auth){
+    public List<Chat> getChats(Authentication auth){
         String userId = auth.getName();
         return chatsRepository.getChats(userId);
     }
