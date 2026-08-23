@@ -13,3 +13,4 @@ aws:
         chat-table: "Chat"
         message-table: "Message"
         members-table: "Members"
+        user-table: "User"

@@ -5,9 +5,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.service.ChatService;
-import com.example.demo.entities.Chat;
+import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class WebPageController {
 
 	private final ChatService chatService;
+	private final UserService userService;
 
 	@GetMapping({"/", "/sign-in"})
 	public String signIn() {
@@ -25,6 +28,21 @@ public class WebPageController {
 	@GetMapping("/sign-up")
 	public String signUp() {
 		return "sign-up";
+	}
+
+	@PostMapping("/sign-up")
+	public String createAccount(
+			@RequestParam String name,
+			@RequestParam String email,
+			@RequestParam String password,
+			Model model) {
+		try {
+			userService.register(name, email, password);
+			return "redirect:/sign-in?registered=true";
+		} catch (IllegalArgumentException exception) {
+			model.addAttribute("signupError", exception.getMessage());
+			return "sign-up";
+		}
 	}
 
 	@GetMapping("/chats")

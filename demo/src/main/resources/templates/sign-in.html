@@ -16,14 +16,16 @@
     </section>
 
     <section class="auth-panel">
-        <form class="auth-form">
+        <form class="auth-form" th:action="@{/sign-in}" method="post">
+            <p th:if="${param.error}" class="form-error">Invalid email or password.</p>
+            <p th:if="${param.registered}" class="form-success">Account created. You can sign in now.</p>
             <label>
                 Email
-                <input type="email" placeholder="you@example.com" />
+                <input type="email" name="email" placeholder="you@example.com" required />
             </label>
             <label>
                 Password
-                <input type="password" placeholder="••••••••" />
+                <input type="password" name="password" placeholder="Your password" required />
             </label>
             <div class="auth-actions">
                 <label class="checkbox-row">

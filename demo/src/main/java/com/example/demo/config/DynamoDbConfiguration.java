@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import com.example.demo.entities.Chat;
 import com.example.demo.entities.ChatMessage;
 import com.example.demo.entities.Members;
+import com.example.demo.entities.User;
 
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
@@ -59,4 +60,11 @@ public class DynamoDbConfiguration {
         @Value("${aws.dynamodb.members-table}") String tableName) {
     return client.table(tableName, TableSchema.fromBean(Members.class));
 }
+
+    @Bean
+    DynamoDbTable<User> userTable(
+            DynamoDbEnhancedClient client,
+            @Value("${aws.dynamodb.user-table:User}") String tableName) {
+        return client.table(tableName, TableSchema.fromBean(User.class));
+    }
 }

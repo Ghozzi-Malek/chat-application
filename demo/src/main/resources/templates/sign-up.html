@@ -16,28 +16,29 @@
     </section>
 
     <section class="auth-panel">
-        <form class="auth-form">
+        <form class="auth-form" th:action="@{/sign-up}" method="post">
+            <p th:if="${signupError}" class="form-error" th:text="${signupError}"></p>
             <div class="two-col">
                 <label>
                     First name
-                    <input type="text" placeholder="Malek" />
+                    <input type="text" name="firstName" placeholder="Malek" required />
                 </label>
                 <label>
                     Last name
-                    <input type="text" placeholder="Amin" />
+                    <input type="text" name="lastName" placeholder="Amin" required />
                 </label>
             </div>
             <label>
                 Username
-                <input type="text" placeholder="malek_amin" />
+                <input type="text" name="name" placeholder="malek_amin" required />
             </label>
             <label>
                 Email
-                <input type="email" placeholder="you@example.com" />
+                <input type="email" name="email" placeholder="you@example.com" required />
             </label>
             <label>
                 Password
-                <input type="password" placeholder="Create a strong password" />
+                <input type="password" name="password" placeholder="Create a strong password" minlength="8" required />
             </label>
             <button type="submit" class="primary-button">Create account</button>
         </form>
