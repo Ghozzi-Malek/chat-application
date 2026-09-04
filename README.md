@@ -25,6 +25,7 @@ In this application we will use websockets to connect users and servers and as a
     "type": "sendMessage",
     "chatId": "",
     "message": "",
+    "senderId": "",
 } -> {
     "SUCCESS" | " FAILURE",
      "message"Id": "",

@@ -50,14 +50,14 @@ public class DynamoDbConfiguration {
     @Bean
     DynamoDbTable<ChatMessage> MessageTable(
             DynamoDbEnhancedClient dynamoDbEnhancedClient,
-            @Value("${aws.dynamodb.message-table}") String tableName) {
+            @Value("${aws.dynamodb.message-table:Message}") String tableName) {
         return dynamoDbEnhancedClient.table(tableName, TableSchema.fromBean(ChatMessage.class));
         
     }
     @Bean
     DynamoDbTable<Members> membersTable(
         DynamoDbEnhancedClient client,
-        @Value("${aws.dynamodb.members-table}") String tableName) {
+        @Value("${aws.dynamodb.members-table:Members}") String tableName) {
     return client.table(tableName, TableSchema.fromBean(Members.class));
 }
 
