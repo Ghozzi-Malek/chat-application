@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/app.css}" />
     <script th:inline="javascript">
         const chats = /*[[${chats}]]*/ [];
+        const currentUserId = /*[[${currentUserId}]]*/ '';
     </script>
     <script th:src="@{/webjars/jquery/3.1.1-1/jquery.min.js}"></script>
     <script th:src="@{/webjars/sockjs-client/1.0.2/sockjs.min.js}"></script>

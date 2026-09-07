@@ -52,6 +52,7 @@ public class WebPageController {
 			System.out.println(chats.get(i).getName());
 		}
 		model.addAttribute("chats", chats);
+		model.addAttribute("currentUserId", auth.getName());
 		return "chats";
 	}
 

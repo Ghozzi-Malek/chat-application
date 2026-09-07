@@ -58,12 +58,34 @@ function sendMessage() {
 
 
 function showGreeting(message) {
-    // append a message element into the message feed
-    $("#greetings").append(
-        "<article class='message outgoing'><div class='message-avatar'>Y</div>" +
-        "<div class='message-body'><div class='message-meta'><strong>You</strong><span></span></div>" +
-        "<p>" + message.text + "</p></div></article>"
-    );
+    if (message.chatId !== getCurrentChatId()) return;
+
+    const senderName = message.senderId === currentUserId ? "You" : message.senderId;
+    const messageElement = $("<article>", {
+        class: "message " + (message.senderId === currentUserId ? "outgoing" : "incoming")
+    });
+    const avatar = $("<div>", {
+        class: "message-avatar",
+        text: senderName ? senderName.charAt(0).toUpperCase() : "?"
+    });
+    const body = $("<div>", { class: "message-body" });
+    const meta = $("<div>", { class: "message-meta" });
+    const sender = $("<strong>", { text: senderName });
+    const time = $("<span>", { text: formatMessageTime(message.timeStamp) });
+    const text = $("<p>", { text: message.text });
+
+    meta.append(sender, time);
+    body.append(meta, text);
+    messageElement.append(avatar, body);
+    $("#greetings").append(messageElement);
+    $(".message-feed").scrollTop($(".message-feed")[0].scrollHeight);
+}
+
+function formatMessageTime(timeStamp) {
+    return new Date(timeStamp).toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit"
+    });
 }
 
 $(function(){

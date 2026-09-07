@@ -4,6 +4,7 @@ import org.apache.logging.log4j.message.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+
 import com.example.demo.repository.ChatsRepositoryImp;
 import com.example.demo.service.ChatService;
 
@@ -24,7 +25,7 @@ public class testController {
 
     private final ChatService chatService;
     @MessageMapping("/chat.send")
-    public void sendMessage(ChatMessage message,Authentication auth){
+    public void sendMessage(ChatMessage message, Authentication auth){
         message.setSenderId(auth.getName());
         message.setTimeStamp(System.currentTimeMillis());
         chatService.deliverMessageToChatMembers(message);
