@@ -2,14 +2,17 @@ package com.example.demo.repository;
 
 import java.util.Map;
 import java.util.Optional;
-
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Repository;
-
-import com.example.demo.entities.User;
-
+import com.example.demo.entities.*;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Expression;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
@@ -17,6 +20,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 @RequiredArgsConstructor
 public class UserRepository {
     private final DynamoDbTable<User> userTable;
+    private final DynamoDbTable<Members> membersTable;
 
     public Optional<User> findByEmail(String email) {
         Expression emailFilter = Expression.builder()
@@ -37,5 +41,20 @@ public class UserRepository {
 
     public void save(User user) {
         userTable.putItem(user);
+    }
+    public List<Members> ChatsMembers(ChatMessage message){
+        QueryConditional query = QueryConditional.keyEqualTo(
+            Key.builder()
+               .partitionValue(message.getChatId())
+               .build()   
+        );
+        return membersTable.query(
+            QueryEnhancedRequest.builder()
+                                .queryConditional(query)
+                                .build()
+        )
+        .items()
+        .stream()
+        .toList();   
     }
 }
