@@ -34,7 +34,7 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         // subscribe to the server destination that the backend sends to
-        stompClient.subscribe('/topic/messages', function (greeting) {
+        stompClient.subscribe('/user/queue/messages', function (greeting) {
             showGreeting(JSON.parse(greeting.body));
         });
     });
