@@ -38,6 +38,21 @@ public class UserRepository {
                 .stream()
                 .findFirst();
     }
+    
+    public String findById(String userId){
+        QueryConditional query = QueryConditional.keyEqualTo(
+                Key.builder()
+                .partitionValue(userId)
+                .build()       
+        );
+
+        return userTable.query(query)
+                        .items()
+                        .stream()
+                        .toList()
+                        .get(0)
+                        .getName();
+    }
 
     public void save(User user) {
         userTable.putItem(user);
