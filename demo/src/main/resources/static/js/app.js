@@ -34,8 +34,8 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         // subscribe to the server destination that the backend sends to
-        stompClient.subscribe('/user/queue/messages', function (greeting) {
-            showGreeting(JSON.parse(greeting.body));
+        stompClient.subscribe('/user/queue/messages', function (message) {
+            showMessage(JSON.parse(message.body));
         });
     });
 }
@@ -57,10 +57,10 @@ function sendMessage() {
 }
 
 
-function showGreeting(message) {
+function showMessage(message) {
     if (message.chatId !== getCurrentChatId()) return;
 
-    const senderName = message.senderId === currentUserId ? "You" : message.senderId;
+    const senderName = message.senderId === currentUserId ? "You" :message.senderName;
     const messageElement = $("<article>", {
         class: "message " + (message.senderId === currentUserId ? "outgoing" : "incoming")
     });
