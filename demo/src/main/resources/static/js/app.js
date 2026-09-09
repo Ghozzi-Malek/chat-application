@@ -42,6 +42,12 @@ function connect() {
         stompClient.subscribe('/user/queue/chat-history', function (message) {
             JSON.parse(message.body).forEach(showMessage);
         });
+        stompClient.subscribe('/user/queue/chat-joined', function (message) {
+            addJoinedChat(JSON.parse(message.body));
+        });
+        stompClient.subscribe('/user/queue/chat-join-error', function (message) {
+            alert(message.body);
+        });
     });
 }
 function disconnect() {
@@ -65,6 +71,36 @@ function sendMessage() {
     stompClient.send("/app/chat.send", {}, JSON.stringify({'text': text,'chatId': getCurrentChatId()}));
     // clear input after sending
     $("#message").val('');
+}
+
+function joinChat() {
+    const chatName = $("#chat-name").val().trim();
+    if (!stompClient || !chatName) return;
+
+    stompClient.send(
+        "/app/chat.join",
+        {},
+        JSON.stringify({ chatName: chatName })
+    );
+    $("#chat-name").val("");
+}
+
+function addJoinedChat(chat) {
+    const chatItem = $("<article>", {
+        class: "chat-item",
+        "data-chat-id": chat.chatId
+    }).on("click", function () {
+        changeCurrentChatId(chat.chatId);
+    });
+    $("<div>", {
+        class: "chat-avatar",
+        text: chat.name.charAt(0).toUpperCase()
+    }).appendTo(chatItem);
+    const meta = $("<div>", { class: "chat-meta" }).appendTo(chatItem);
+    const row = $("<div>", { class: "chat-row" }).appendTo(meta);
+    $("<h2>", { text: chat.name }).appendTo(row);
+    $(".chat-list").append(chatItem);
+    changeCurrentChatId(chat.chatId);
 }
 
 
@@ -109,4 +145,5 @@ $(function () {
     });
     console.log(chats);
     $( "#send" ).click(function() { sendMessage(); });
+    $( "#join-chat" ).click(function() { joinChat(); });
 })

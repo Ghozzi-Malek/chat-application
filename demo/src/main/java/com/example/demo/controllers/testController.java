@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.example.demo.entities.ChatMessage;
 import com.example.demo.entities.MessageTest;
+import com.example.demo.entities.Chat;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +49,18 @@ public class testController {
                 auth.getName(), "/queue/chat-history", messages);
     }
 
+        @MessageMapping("/chat.join")
+        public void joinChat(JoinRequest request, Authentication auth) {
+        chatService.joinChat(request.chatName(), auth.getName())
+            .ifPresentOrElse(
+                chat -> messagingTemplate.convertAndSendToUser(
+                    auth.getName(), "/queue/chat-joined", chat),
+                () -> messagingTemplate.convertAndSendToUser(
+                    auth.getName(), "/queue/chat-join-error",
+                    "Chat not found"));
+        }
+
     public record ChatRequest(String chatId) {}
+        public record JoinRequest(String chatName) {}
     
 }

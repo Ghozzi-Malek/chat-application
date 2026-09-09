@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import com.example.demo.entities.Chat;
@@ -35,5 +36,15 @@ public class ChatService {
                     member.getUserId(), "/queue/messages", message);
         }
 
+    }
+
+    public Optional<Chat> joinChat(String chatName, String userId) {
+        Chat chat = chatsRepository.findChatByName(chatName);
+        if (chat == null) {
+            return Optional.empty();
+        }
+
+        chatsRepository.addMember(chat.getChatId(), userId);
+        return Optional.of(chat);
     }
 }

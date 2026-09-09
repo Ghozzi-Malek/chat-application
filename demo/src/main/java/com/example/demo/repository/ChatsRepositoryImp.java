@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import com.example.demo.entities.Chat;
 import com.example.demo.entities.ChatMessage;
 import com.example.demo.entities.Members;
@@ -13,6 +14,7 @@ import software.amazon.awssdk.enhanced.dynamodb.Expression;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 @Repository
 @RequiredArgsConstructor
 
@@ -42,6 +44,30 @@ public class ChatsRepositoryImp {
                         .build()))
                 .filter(chat -> chat != null)
                 .toList();
+    }
+
+    public Chat findChatByName(String name) {
+        Expression nameFilter = Expression.builder()
+                .expression("#chatName = :chatName")
+                .expressionNames(Map.of("#chatName", "name"))
+                .expressionValues(Map.of(
+                        ":chatName", AttributeValue.builder().s(name).build()))
+                .build();
+
+        return chatTable.scan(ScanEnhancedRequest.builder()
+                        .filterExpression(nameFilter)
+                        .build())
+                .items()
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void addMember(String chatId, String userId) {
+        Members member = new Members();
+        member.setChatId(chatId);
+        member.setUserId(userId);
+        membersTable.putItem(member);
     }
 
 
