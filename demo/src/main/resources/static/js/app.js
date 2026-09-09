@@ -16,6 +16,8 @@ function setConnected(connected) {
 function changeCurrentChatId(id) {
     console.log(id)
     currentChatId = id;
+    $("#greetings").empty();
+    getMessages();
 }
 
 function getCurrentChatId() {
@@ -37,6 +39,9 @@ function connect() {
         stompClient.subscribe('/user/queue/messages', function (message) {
             showMessage(JSON.parse(message.body));
         });
+        stompClient.subscribe('/user/queue/chat-history', function (message) {
+            JSON.parse(message.body).forEach(showMessage);
+        });
     });
 }
 function disconnect() {
@@ -47,6 +52,12 @@ function disconnect() {
     console.log("Disconnected");
 
 }
+
+function getMessages(){
+    if (!stompClient || !currentChatId) return;
+    stompClient.send("/app/chat.messages",{},JSON.stringify({'chatId':getCurrentChatId()}));
+}
+
 function sendMessage() {
     if (!stompClient) return;
     var text = $("#message").val();
@@ -66,7 +77,8 @@ function showMessage(message) {
     });
     const avatar = $("<div>", {
         class: "message-avatar",
-        text: senderName ? senderName.charAt(0).toUpperCase() : "?"
+        text: senderName ? senderName.charAt(0).toUpperCase() : "?",
+        
     });
     const body = $("<div>", { class: "message-body" });
     const meta = $("<div>", { class: "message-meta" });

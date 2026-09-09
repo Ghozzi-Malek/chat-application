@@ -11,6 +11,7 @@ import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Expression;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
 @Repository
 @RequiredArgsConstructor
@@ -41,6 +42,26 @@ public class ChatsRepositoryImp {
                         .build()))
                 .filter(chat -> chat != null)
                 .toList();
+    }
+
+
+    public List<ChatMessage> getChatMessages(String chatId){
+        QueryConditional queryConditional =QueryConditional.keyEqualTo(
+                Key.builder()
+                   .partitionValue(chatId)   
+                   .build()
+        );
+        QueryEnhancedRequest queryEnhancedRequest = QueryEnhancedRequest.builder()
+                                                    .queryConditional(queryConditional)
+                                                    .scanIndexForward(false)
+                                                    .limit(10)
+                                                    .build();
+
+        return messagTable.query(queryEnhancedRequest)
+                          .items()
+                          .stream()
+                          .toList();
+                
     }
 
     public void saveMessageToDb(ChatMessage message){

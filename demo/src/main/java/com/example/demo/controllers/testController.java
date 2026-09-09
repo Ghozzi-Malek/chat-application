@@ -9,11 +9,15 @@ import com.example.demo.repository.ChatsRepositoryImp;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ChatService;
 import com.example.demo.service.UserService;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
 import com.example.demo.entities.ChatMessage;
 import com.example.demo.entities.MessageTest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 
@@ -26,11 +30,24 @@ import com.example.demo.entities.MessageTest;
 public class testController {
 
     private final ChatService chatService;
+    private final ChatsRepositoryImp chatsRepositoryImp;
+    private final SimpMessagingTemplate messagingTemplate;
     @MessageMapping("/chat.send")
     public void sendMessage(ChatMessage message, Authentication auth){
         message.setSenderId(auth.getName());
         message.setTimeStamp(System.currentTimeMillis());
         chatService.deliverMessageToChatMembers(message);
     }
+
+    @MessageMapping("/chat.messages")
+    public void getChatMessages(ChatRequest request, Authentication auth){
+        List<ChatMessage> messages = chatsRepositoryImp.getChatMessages(request.chatId());
+        messages = new ArrayList<>(messages);
+        Collections.reverse(messages);
+        messagingTemplate.convertAndSendToUser(
+                auth.getName(), "/queue/chat-history", messages);
+    }
+
+    public record ChatRequest(String chatId) {}
     
 }
