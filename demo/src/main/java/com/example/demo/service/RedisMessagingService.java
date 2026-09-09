@@ -12,7 +12,7 @@ public class RedisMessagingService {
     @Autowired 
     private String redisChannel;
 
-    public void sendMessage(String message){
-        redisTemplate.convertAndSend("malek", message);
+    public void sendMessage(String message,String channel){
+        redisTemplate.convertAndSend(channel, message);
     }
 }

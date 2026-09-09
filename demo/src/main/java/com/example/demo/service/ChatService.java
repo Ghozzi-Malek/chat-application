@@ -9,6 +9,7 @@ import com.example.demo.entities.Members;
 import com.example.demo.entities.ChatMessage;
 import com.example.demo.repository.ChatsRepositoryImp;
 import com.example.demo.repository.UserRepository;
+import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,7 @@ public class ChatService {
     private final ChatsRepositoryImp chatsRepository;
     private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final RedisMessagingService redisMessagingService;
 
     public List<Chat> getChats(Authentication auth){
         String userId = auth.getName();
@@ -32,10 +34,13 @@ public class ChatService {
 
         List<Members> members = userRepository.ChatsMembers(message);
         for (Members member : members) {
-            messagingTemplate.convertAndSendToUser(
-                    member.getUserId(), "/queue/messages", message);
-        }
 
+            // from object to json
+            Gson gson = new Gson();
+            String json = gson.toJson(message);
+            redisMessagingService.sendMessage(json,member.getUserId());
+        
+        }
     }
 
     public Optional<Chat> joinChat(String chatName, String userId) {
