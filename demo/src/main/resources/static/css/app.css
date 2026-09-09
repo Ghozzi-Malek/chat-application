@@ -423,3 +423,7 @@ input:focus {
         grid-template-columns: 1fr;
     }
 }
+
+.message {
+    margin-bottom: 20px;
+}

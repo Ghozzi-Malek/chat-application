@@ -79,8 +79,7 @@ function showMessage(message) {
         class: "message-avatar",
         text: senderName ? senderName.charAt(0).toUpperCase() : "?",
         
-    });
-    const body = $("<div>", { class: "message-body" });
+    });    const body = $("<div>", { class: "message-body" });
     const meta = $("<div>", { class: "message-meta" });
     const sender = $("<strong>", { text: senderName });
     const time = $("<span>", { text: formatMessageTime(message.timeStamp) });
