@@ -9,10 +9,8 @@ public class RedisMessagingService {
 
     @Autowired  
     private StringRedisTemplate redisTemplate;
-    @Autowired 
-    private String redisChannel;
 
     public void sendMessage(String message,String channel){
-        redisTemplate.convertAndSend(channel, message);
+        redisTemplate.convertAndSend("chat:user:" + channel, message);
     }
 }
