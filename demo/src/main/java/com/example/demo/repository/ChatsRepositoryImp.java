@@ -93,7 +93,7 @@ public class ChatsRepositoryImp {
     public void saveMessageToDb(ChatMessage message){
         message.setTimeStamp(System.currentTimeMillis());
         messagTable.putItem(message);
-        System.out.println(message.getText());
+        
     }
 
 }

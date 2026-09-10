@@ -31,7 +31,6 @@ public class ChatService {
     public void deliverMessageToChatMembers(ChatMessage message){
         message.setSenderName(userRepository.findById(message.getSenderId()));
         chatsRepository.saveMessageToDb(message);
-
         List<Members> members = userRepository.ChatsMembers(message);
         for (Members member : members) {
 

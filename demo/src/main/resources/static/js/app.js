@@ -120,7 +120,6 @@ function showMessage(message) {
     const sender = $("<strong>", { text: senderName });
     const time = $("<span>", { text: formatMessageTime(message.timeStamp) });
     const text = $("<p>", { text: message.text });
-
     meta.append(sender, time);
     body.append(meta, text);
     messageElement.append(avatar, body);
