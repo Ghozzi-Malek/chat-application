@@ -46,8 +46,8 @@ aws dynamodb create-table \
                 AttributeName=chatId,AttributeType=S \
                 AttributeName=timeStamp,AttributeType=N \
                 --key-schema \
-                AttributeName=chatId,keyType=HASH\
-                AttributeName=timeStamp,keyType=RANGE \
+                AttributeName=chatId,KeyType=HASH\
+                AttributeName=timeStamp,KeyType=RANGE \
                 --billing-mode PAY_PER_REQUEST \
                 --endpoint-url http://localhost:8000 1> /dev/null
 
