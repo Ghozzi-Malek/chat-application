@@ -61,6 +61,6 @@ public class testController {
         }
 
     public record ChatRequest(String chatId) {}
-        public record JoinRequest(String chatName) {}
+    public record JoinRequest(String chatName) {}
     
 }
