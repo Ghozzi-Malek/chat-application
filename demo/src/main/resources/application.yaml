@@ -18,3 +18,4 @@ aws:
         message-table: "Message"
         members-table: "Members"
         user-table: "User"
+        missing-message-table: "MissingMessage"

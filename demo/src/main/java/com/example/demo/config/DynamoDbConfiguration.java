@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import com.example.demo.entities.Chat;
 import com.example.demo.entities.ChatMessage;
 import com.example.demo.entities.Members;
+import com.example.demo.entities.MissingMessage;
 import com.example.demo.entities.User;
 
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
@@ -67,4 +68,10 @@ public class DynamoDbConfiguration {
             @Value("${aws.dynamodb.user-table:User}") String tableName) {
         return client.table(tableName, TableSchema.fromBean(User.class));
     }
+    @Bean 
+    DynamoDbTable<MissingMessage> missingMessageTable(
+        DynamoDbEnhancedClient client,
+        @Value("${aws.dynamodb.missing-message-table:MissingMessage})") String tableName){
+            return client.table((tableName), TableSchema.fromBean(MissingMessage.class));
+        }
 }
