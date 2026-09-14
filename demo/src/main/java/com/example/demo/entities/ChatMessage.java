@@ -7,7 +7,6 @@ import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
-import software.amazon.awssdk.services.dynamodb.endpoints.internal.Value.Str;
 
 @DynamoDbBean
 @Getter
@@ -17,7 +16,7 @@ import software.amazon.awssdk.services.dynamodb.endpoints.internal.Value.Str;
 public class ChatMessage {
     
     private String chatId;
-    private String messagId;
+    private String messageId;
     private String senderId;
     private String senderName;
     private String text;

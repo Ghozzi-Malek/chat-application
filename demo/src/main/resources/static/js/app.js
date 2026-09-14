@@ -105,8 +105,12 @@ function addJoinedChat(chat) {
 
 
 function showMessage(message) {
+    if (message.messageId) {
+        stompClient.send("/app/chat.ack", {}, JSON.stringify({
+            messageId: message.messageId
+        }));
+    }
     if (message.chatId !== getCurrentChatId()) return;
-
     const senderName = message.senderId === currentUserId ? "You" :message.senderName;
     const messageElement = $("<article>", {
         class: "message " + (message.senderId === currentUserId ? "outgoing" : "incoming")

@@ -7,6 +7,7 @@ import java.util.Map;
 import com.example.demo.entities.Chat;
 import com.example.demo.entities.ChatMessage;
 import com.example.demo.entities.Members;
+import com.example.demo.entities.MissingMessage;
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
@@ -22,6 +23,7 @@ public class ChatsRepositoryImp {
     private final DynamoDbTable<Chat> chatTable;
     private final DynamoDbTable<Members> membersTable;
     private final DynamoDbTable<ChatMessage> messagTable;
+        private final DynamoDbTable<MissingMessage> missingMessageTable;
     
 
     public List<Chat> getChats(String userId) {
@@ -91,10 +93,24 @@ public class ChatsRepositoryImp {
     }
 
     public void saveMessageToDb(ChatMessage message){
-        message.setTimeStamp(System.currentTimeMillis());
+                message.setTimeStamp(System.currentTimeMillis());
         messagTable.putItem(message);
         
     }
+
+        public void saveMissingMessage(String userId, ChatMessage message) {
+                MissingMessage missingMessage = new MissingMessage();
+                missingMessage.setUserId(userId);
+                missingMessage.setMessageId(message.getMessageId());
+                missingMessageTable.putItem(missingMessage);
+        }
+
+        public void acknowledgeMessage(String userId, String messageId) {
+                missingMessageTable.deleteItem(Key.builder()
+                                .partitionValue(userId)
+                                .sortValue(messageId)
+                                .build());
+        }
 
 }
 

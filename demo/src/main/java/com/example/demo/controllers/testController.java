@@ -49,6 +49,11 @@ public class testController {
                 auth.getName(), "/queue/chat-history", messages);
     }
 
+    @MessageMapping("/chat.ack")
+    public void acknowledgeMessage(MessageAck ack, Authentication auth) {
+        chatsRepositoryImp.acknowledgeMessage(auth.getName(), ack.messageId());
+    }
+
         @MessageMapping("/chat.join")
         public void joinChat(JoinRequest request, Authentication auth) {
         chatService.joinChat(request.chatName(), auth.getName())
@@ -62,5 +67,6 @@ public class testController {
 
     public record ChatRequest(String chatId) {}
     public record JoinRequest(String chatName) {}
+    public record MessageAck(String messageId) {}
     
 }

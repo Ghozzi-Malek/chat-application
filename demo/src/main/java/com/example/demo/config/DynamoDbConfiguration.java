@@ -71,7 +71,7 @@ public class DynamoDbConfiguration {
     @Bean 
     DynamoDbTable<MissingMessage> missingMessageTable(
         DynamoDbEnhancedClient client,
-        @Value("${aws.dynamodb.missing-message-table:MissingMessage})") String tableName){
+        @Value("${aws.dynamodb.missing-message-table:MissingMessage}") String tableName){
             return client.table((tableName), TableSchema.fromBean(MissingMessage.class));
         }
 }

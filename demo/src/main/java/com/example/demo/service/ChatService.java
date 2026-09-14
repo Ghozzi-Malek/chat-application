@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import com.example.demo.entities.Chat;
@@ -29,6 +30,7 @@ public class ChatService {
     }
 
     public void deliverMessageToChatMembers(ChatMessage message){
+        message.setMessageId(UUID.randomUUID().toString());
         message.setSenderName(userRepository.findById(message.getSenderId()));
         chatsRepository.saveMessageToDb(message);
         List<Members> members = userRepository.ChatsMembers(message);
@@ -37,6 +39,7 @@ public class ChatService {
             // from object to json
             Gson gson = new Gson();
             String json = gson.toJson(message);
+                chatsRepository.saveMissingMessage(member.getUserId(), message);
             redisMessagingService.sendMessage(json,member.getUserId());
         
         }

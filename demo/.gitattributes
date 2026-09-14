@@ -1,2 +1,4 @@
 /mvnw text eol=lf
 *.cmd text eol=crlf
+docs/** linguist-documentation=false
+app/** linguist-documentation=false
