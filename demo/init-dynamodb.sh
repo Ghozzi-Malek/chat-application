@@ -8,7 +8,7 @@ echo "Creating tables..."
 # Chat table
 # =========================
 
-# docker run -d -p 8000:8000 amazon/dynamodb-local
+ docker run -d -p 8000:8000 amazon/dynamodb-local
 
 
 aws dynamodb create-table \
@@ -54,12 +54,12 @@ aws dynamodb create-table \
 aws dynamodb create-table \
     --table-name MissingMessage \
     --attribute-definitions \
-    AttributeName=userId,AttributeType=S
-                AttributeName=messageId,AttributeType=S \
+    AttributeName=userId,AttributeType=S \
+    AttributeName=messageId,AttributeType=S \
     --key-schema \
                 AttributeName=userId,KeyType=HASH \
                 AttributeName=messageId,KeyType=SORT \
-    --billing-mode PAY_PER_REQUEST
+    --billing-mode PAY_PER_REQUEST \
     --endpoint-url http://localhost:8000 1>/dev/null
 
 # =========================
@@ -79,8 +79,6 @@ aws dynamodb put-item \
                 --item '{"chatId" : {"S":"123"},"name" : {"S":"Friends"}}' \
                 --endpoint-url http://localhost:8000
 
- 
-    --endpoint-url "$ENDPOINT"
 
 
 echo "Database setup complete!"
