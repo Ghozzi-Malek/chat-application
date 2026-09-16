@@ -1,7 +1,9 @@
 package com.example.demo.repository;
 
+import org.springframework.data.util.QTypeContributor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import com.example.demo.entities.Chat;
@@ -23,8 +25,24 @@ public class ChatsRepositoryImp {
     private final DynamoDbTable<Chat> chatTable;
     private final DynamoDbTable<Members> membersTable;
     private final DynamoDbTable<ChatMessage> messagTable;
-        private final DynamoDbTable<MissingMessage> missingMessageTable;
+    private final DynamoDbTable<MissingMessage> missingMessageTable;
     
+
+        public List<String> getMissedChats(String userId){
+        QueryConditional query = QueryConditional.keyEqualTo(
+                Key.builder()   
+                   .partitionValue(userId)
+                   .build()
+       );
+       return  missingMessageTable.query(query)
+                .items()
+                .stream()
+                .map(MissingMessage::getChatId)
+                .distinct()
+                .toList();
+
+        
+     }   
 
     public List<Chat> getChats(String userId) {
         Expression userFilter = Expression.builder()
@@ -102,6 +120,7 @@ public class ChatsRepositoryImp {
                 MissingMessage missingMessage = new MissingMessage();
                 missingMessage.setUserId(userId);
                 missingMessage.setMessageId(message.getMessageId());
+                missingMessage.setChatId(message.getChatId());
                 missingMessageTable.putItem(missingMessage);
         }
 
