@@ -17,6 +17,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortK
 public class MissingMessage {
     private String userId;
     private String messageId;
+    private long timeStamp;
 
     @DynamoDbPartitionKey 
     public String getUserId(){
@@ -24,7 +25,7 @@ public class MissingMessage {
     }
 
     @DynamoDbSortKey
-    public String getMessageId(){
-        return messageId;
+    public long getTimeStamp(){
+        return timeStamp;
     }
 }

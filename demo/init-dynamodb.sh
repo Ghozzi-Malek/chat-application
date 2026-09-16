@@ -55,10 +55,10 @@ aws dynamodb create-table \
     --table-name MissingMessage \
     --attribute-definitions \
     AttributeName=userId,AttributeType=S \
-    AttributeName=messageId,AttributeType=S \
+    AttributeName=timeStamp,AttributeType=S \
     --key-schema \
                 AttributeName=userId,KeyType=HASH \
-                AttributeName=messageId,KeyType=SORT \
+                AttributeName=timeStamp,KeyType=SORT \
     --billing-mode PAY_PER_REQUEST \
     --endpoint-url http://localhost:8000 1>/dev/null
 
