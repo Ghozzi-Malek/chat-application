@@ -17,6 +17,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortK
 public class MissingMessage {
     private String userId;
     private String messageId;
+    private String chatId;
     private long timeStamp;
 
     @DynamoDbPartitionKey 
