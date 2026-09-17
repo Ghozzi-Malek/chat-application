@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,9 +25,25 @@ public class ChatService {
     private final SimpMessagingTemplate messagingTemplate;
     private final RedisMessagingService redisMessagingService;
 
-    public List<Chat> getChats(Authentication auth){
+    public ArrayList<Chat> getChats(Authentication auth){
         String userId = auth.getName();
-        return chatsRepository.getChats(userId);
+        List<Chat> allChats = chatsRepository.getChats(userId);
+        List<String> missedChatIds = chatsRepository.getMissedChats(userId);
+
+        ArrayList<Chat> sortedChats = new ArrayList<>();
+
+        for (String missedChatId : missedChatIds) {
+            allChats.stream()
+                    .filter(chat -> chat.getChatId().equals(missedChatId))
+                    .findFirst()
+                    .ifPresent(sortedChats::add);
+        }
+
+        allChats.stream()
+                .filter(chat -> !missedChatIds.contains(chat.getChatId()))
+                .forEach(sortedChats::add);
+
+        return sortedChats  ;
     }
 
     public void deliverMessageToChatMembers(ChatMessage message){

@@ -34,7 +34,10 @@ public class ChatsRepositoryImp {
                    .partitionValue(userId)
                    .build()
        );
-       return  missingMessageTable.query(query)
+        return  missingMessageTable.query(QueryEnhancedRequest.builder()
+                  .queryConditional(query)
+                  .scanIndexForward(false)
+                  .build())
                 .items()
                 .stream()
                 .map(MissingMessage::getChatId)
