@@ -6,7 +6,9 @@
     <title>PulseChat | Chats</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
     <script th:inline="javascript">
-        const chats = /*[[${chats}]]*/ [];
+        const missedChats = /*[[${missedChats}]]*/ [];
+        const otherChats = /*[[${otherChats}]]*/ [];
+        const chats = missedChats.concat(otherChats);
         const currentUserId = /*[[${currentUserId}]]*/ '';
     </script>
     <script th:src="@{/webjars/jquery/3.1.1-1/jquery.min.js}"></script>
@@ -34,11 +36,13 @@
         </div>
 
         <div class="chat-list">
-            
-
+            <div class="chat-section-heading missed-chat-heading"
+                 th:if="${!#lists.isEmpty(missedChats)}">
+                <span>Unread activity</span>
+                <strong th:text="${#lists.size(missedChats)}">0</strong>
             </div>
-            <article class="chat-item" 
-            th:each="chat : ${chats}" 
+            <article class="chat-item missed-chat-item"
+            th:each="chat : ${missedChats}"
             th:attr="data-chat-id=${chat.chatId}"
             onclick="changeCurrentChatId(this.dataset.chatId)">
             <!--data-* attribute allow us to store additional data in html element,however it can be inspected and modified -->
@@ -49,6 +53,22 @@
                         
                     </div>
                     <!-- <p><strong th:text="${chat.lastSender()}">Nadia</strong>: <span th:text="${chat.lastMessage()}">Shipping the onboarding redesign today.</span></p> -->
+                </div>
+            </article>
+
+            <div class="chat-section-heading other-chat-heading"
+                 th:if="${!#lists.isEmpty(otherChats)}">
+                <span>Other chats</span>
+            </div>
+            <article class="chat-item"
+            th:each="chat : ${otherChats}"
+            th:attr="data-chat-id=${chat.chatId}"
+            onclick="changeCurrentChatId(this.dataset.chatId)">
+                <div class="chat-avatar" th:text="${chat.getName().substring(0, 1)}">P</div>
+                <div class="chat-meta">
+                    <div class="chat-row">
+                        <h2 th:text="${chat.getName()}">Product Team</h2>
+                    </div>
                 </div>
             </article>
         </div>
