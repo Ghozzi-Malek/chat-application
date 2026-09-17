@@ -112,7 +112,6 @@ public class ChatsRepositoryImp {
                           .toList();
                 
     }
-
     public void saveMessageToDb(ChatMessage message){
                 message.setTimeStamp(System.currentTimeMillis());
         messagTable.putItem(message);
@@ -124,6 +123,7 @@ public class ChatsRepositoryImp {
                 missingMessage.setUserId(userId);
                 missingMessage.setMessageId(message.getMessageId());
                 missingMessage.setChatId(message.getChatId());
+                missingMessage.setTimeStamp(message.getTimeStamp());
                 missingMessageTable.putItem(missingMessage);
         }
 
@@ -132,6 +132,18 @@ public class ChatsRepositoryImp {
                                 .partitionValue(userId)
                                 .sortValue(messageId)
                                 .build());
+        }
+
+        public void deleteMissedMessages(String userId) {
+                missingMessageTable.query(QueryEnhancedRequest.builder()
+                                .queryConditional(QueryConditional.keyEqualTo(
+                                        Key.builder().partitionValue(userId).build()))
+                                .build())
+                        .items()
+                        .forEach(missingMessage -> missingMessageTable.deleteItem(Key.builder()
+                                .partitionValue(userId)
+                                .sortValue(missingMessage.getTimeStamp())
+                                .build()));
         }
 
 }

@@ -1,8 +1,11 @@
 package com.example.demo.service;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -25,26 +28,35 @@ public class ChatService {
     private final SimpMessagingTemplate messagingTemplate;
     private final RedisMessagingService redisMessagingService;
 
-    public ArrayList<Chat> getChats(Authentication auth){
+    public ChatGroups getChatGroups(Authentication auth){
         String userId = auth.getName();
         List<Chat> allChats = chatsRepository.getChats(userId);
         List<String> missedChatIds = chatsRepository.getMissedChats(userId);
 
-        ArrayList<Chat> sortedChats = new ArrayList<>();
-
-        for (String missedChatId : missedChatIds) {
-            allChats.stream()
-                    .filter(chat -> chat.getChatId().equals(missedChatId))
-                    .findFirst()
-                    .ifPresent(sortedChats::add);
+        Map<String, Chat> chatsById = new HashMap<>();
+        for (Chat chat : allChats) {
+            chatsById.put(chat.getChatId(), chat);
         }
 
-        allChats.stream()
-                .filter(chat -> !missedChatIds.contains(chat.getChatId()))
-                .forEach(sortedChats::add);
+        List<Chat> missedChats = new java.util.ArrayList<>();
+        for (String missedChatId : missedChatIds) {
+            Chat chat = chatsById.get(missedChatId);
+            if (chat != null) {
+                missedChats.add(chat);
+            }
+        }
 
-        return sortedChats  ;
+        Set<String> missedIds = new HashSet<>(missedChatIds);
+        List<Chat> otherChats = allChats.stream()
+                .filter(chat -> !missedIds.contains(chat.getChatId()))
+                .toList();
+        
+        chatsRepository.deleteMissedMessages(userId);
+
+        return new ChatGroups(missedChats, otherChats);
     }
+
+    public record ChatGroups(List<Chat> missedChats, List<Chat> otherChats) {}
 
     public void deliverMessageToChatMembers(ChatMessage message){
         message.setMessageId(UUID.randomUUID().toString());
