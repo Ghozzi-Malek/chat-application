@@ -8,8 +8,11 @@ echo "Creating tables..."
 # Chat table
 # =========================
 
- docker run -d -p 8000:8000 amazon/dynamodb-local
-
+docker run -d -p 8000:8000 amazon/dynamodb-local
+until aws dynamodb list-tables --endpoint-url http://localhost:8000 >/dev/null 2>&1; do
+  echo "Waiting for DynamoDB Local..."
+  sleep 2
+done
 
 aws dynamodb create-table \
                 --table-name User \
@@ -46,7 +49,7 @@ aws dynamodb create-table \
                 AttributeName=chatId,AttributeType=S \
                 AttributeName=timeStamp,AttributeType=N \
                 --key-schema \
-                AttributeName=chatId,KeyType=HASH\
+                AttributeName=chatId,KeyType=HASH \
                 AttributeName=timeStamp,KeyType=RANGE \
                 --billing-mode PAY_PER_REQUEST \
                 --endpoint-url http://localhost:8000 1> /dev/null
@@ -55,10 +58,10 @@ aws dynamodb create-table \
     --table-name MissingMessage \
     --attribute-definitions \
     AttributeName=userId,AttributeType=S \
-    AttributeName=timeStamp,AttributeType=S \
+    AttributeName=timeStamp,AttributeType=N \
     --key-schema \
                 AttributeName=userId,KeyType=HASH \
-                AttributeName=timeStamp,KeyType=SORT \
+                AttributeName=timeStamp,KeyType=RANGE \
     --billing-mode PAY_PER_REQUEST \
     --endpoint-url http://localhost:8000 1>/dev/null
 
