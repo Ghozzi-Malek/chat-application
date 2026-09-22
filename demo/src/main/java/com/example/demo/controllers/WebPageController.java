@@ -47,11 +47,9 @@ public class WebPageController {
 
 	@GetMapping("/chats")
 	public String chats(Model model, Authentication auth) {
-		var chats = chatService.getChats(auth);
-		for(int i = 0;i < chats.size();i++){
-			System.out.println(chats.get(i).getName());
-		}
-		model.addAttribute("chats", chats);
+		var chatGroups = chatService.getChatGroups(auth);
+		model.addAttribute("missedChats", chatGroups.missedChats());
+		model.addAttribute("otherChats", chatGroups.otherChats());
 		model.addAttribute("currentUserId", auth.getName());
 		return "chats";
 	}
