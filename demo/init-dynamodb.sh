@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENDPOINT="http://localhost:8000"
+ENDPOINT="${DYNAMODB_ENDPOINT:-http://localhost:8000}"
 
 echo "Creating tables..."
 
@@ -8,8 +8,7 @@ echo "Creating tables..."
 # Chat table
 # =========================
 
-docker run -d -p 8000:8000 amazon/dynamodb-local
-until aws dynamodb list-tables --endpoint-url http://localhost:8000 >/dev/null 2>&1; do
+until aws dynamodb list-tables --endpoint-url "$ENDPOINT" --region us-east-1 >/dev/null 2>&1; do
   echo "Waiting for DynamoDB Local..."
   sleep 2
 done
@@ -21,7 +20,7 @@ aws dynamodb create-table \
                 --key-schema \
                 AttributeName=userId,KeyType=HASH \
                 --billing-mode PAY_PER_REQUEST \
-                --endpoint-url http://localhost:8000 1> /dev/null
+                --endpoint-url "$ENDPOINT" --region us-east-1 1> /dev/null
 
 aws dynamodb create-table \
                 --table-name Members \
@@ -32,7 +31,7 @@ aws dynamodb create-table \
                 AttributeName=chatId,KeyType=HASH \
                 AttributeName=userId,KeyType=SORT \
                 --billing-mode PAY_PER_REQUEST \
-                --endpoint-url http://localhost:8000 1> /dev/null
+                --endpoint-url "$ENDPOINT" --region us-east-1 1> /dev/null
 
 aws dynamodb create-table \
                                 --table-name Chat \
@@ -41,7 +40,7 @@ aws dynamodb create-table \
                                 --key-schema \
                                 AttributeName=chatId,KeyType=HASH \
                                 --billing-mode PAY_PER_REQUEST \
-                                --endpoint-url http://localhost:8000 1> /dev/null
+                                --endpoint-url "$ENDPOINT" --region us-east-1 1> /dev/null
 
 aws dynamodb create-table \
                 --table-name Message \
@@ -52,7 +51,7 @@ aws dynamodb create-table \
                 AttributeName=chatId,KeyType=HASH \
                 AttributeName=timeStamp,KeyType=RANGE \
                 --billing-mode PAY_PER_REQUEST \
-                --endpoint-url http://localhost:8000 1> /dev/null
+                --endpoint-url "$ENDPOINT" --region us-east-1 1> /dev/null
 
 aws dynamodb create-table \
     --table-name MissingMessage \
@@ -63,7 +62,7 @@ aws dynamodb create-table \
                 AttributeName=userId,KeyType=HASH \
                 AttributeName=timeStamp,KeyType=RANGE \
     --billing-mode PAY_PER_REQUEST \
-    --endpoint-url http://localhost:8000 1>/dev/null
+    --endpoint-url "$ENDPOINT" --region us-east-1 1>/dev/null
 
 # =========================
 # Add records
@@ -75,12 +74,12 @@ echo "Adding records..."
 aws dynamodb put-item \
                 --table-name Chat \
                 --item '{"chatId" : {"S":"222"},"name" : {"S":"Family"}}' \
-                --endpoint-url http://localhost:8000
+                --endpoint-url "$ENDPOINT" --region us-east-1
 
 aws dynamodb put-item \
                 --table-name Chat \
                 --item '{"chatId" : {"S":"123"},"name" : {"S":"Friends"}}' \
-                --endpoint-url http://localhost:8000
+                --endpoint-url "$ENDPOINT" --region us-east-1
 
 
 

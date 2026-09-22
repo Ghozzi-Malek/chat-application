@@ -1,0 +1,36 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chat-app
+    depends_on:
+      - redis
+      - dynamodb
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      DYNAMODB_ENDPOINT: http://dynamodb:8000
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+    ports:
+      - "8081:8081"
+
+  redis:
+    image: redis:7-alpine
+    container_name: chat-redis
+
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    container_name: chat-dynamodb
+    user: root
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    working_dir: /home/dynamodblocal
+    volumes:
+      - dynamodb-data:/home/dynamodblocal/data
+    ports:
+      - "8000:8000"
+
+volumes:
+  dynamodb-data:
